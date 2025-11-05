@@ -1,10 +1,12 @@
 // app/page.tsx
-import { auth } from "@clerk/nextjs/server"; // Importamos o 'auth' do servidor
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-export default function HomePage() {
+// MUDANÇA 1: Adicionamos 'async' aqui
+export default async function HomePage() {
+  // MUDANÇA 2: Adicionamos 'await' aqui
   // Pega o ID do usuário. Se não estiver logado, userId será null
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (userId) {
     // Se o usuário JÁ ESTÁ LOGADO, mande-o para o dashboard
