@@ -1,0 +1,21 @@
+// prisma/schema.prisma
+
+// 1. O client que será gerado e usado no seu código
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 2. O datasource para o seu banco Vercel Postgres
+// Ele usa a variável de ambiente DATABASE_URL
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 3. Exemplo de Modelo: Um modelo simples de TAREFA
+model Tarefa {
+  id        String   @id @default(cuid())
+  titulo    String
+  completa  Boolean  @default(false)
+  criadoEm  DateTime @default(now())
+}
