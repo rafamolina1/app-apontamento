@@ -1,5 +1,8 @@
 // components/Header.tsx
+// Removemos o 'use client' pois não há mais componentes interativos aqui
+
 import { Bell, Sun } from "lucide-react";
+// Removemos a importação do UserButton
 
 export default function Header() {
   return (
@@ -15,9 +18,9 @@ export default function Header() {
           <Bell className="h-6 w-6" />
         </button>
 
-        {/* Avatar do Usuário */}
+        {/* Avatar Falso (Opcional, ou pode remover este div) */}
         <div className="h-9 w-9 cursor-pointer rounded-full bg-gray-300">
-          {/* Futuramente, <Image> do next/image com a foto */}
+          {/* Avatar do Usuário (Placeholder) */}
         </div>
       </div>
     </header>
