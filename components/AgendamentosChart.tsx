@@ -4,12 +4,15 @@
 import React from "react";
 
 // Tipos de dados
-type ChartData = {
+// --- CORREÇÃO AQUI ---
+export type ChartData = {
   concluidos: number;
   agendados: number;
   cancelados: number;
   naoCompareceu: number;
 };
+// --------------------
+
 interface Props {
   data: ChartData;
 }
@@ -36,12 +39,12 @@ export default function AgendamentosChart({ data }: Props) {
   }
 
   return (
+    // Renderiza a barra de porcentagem de "pizza" e a legenda
     <div className="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12 h-full">
-      {/* GRÁFICO FALSO (Simulação Visual) */}
+      {/* GRÁFICO FALSO (Simulação Visual de Barra de Porcentagem) */}
       <div className="relative h-48 w-48 rounded-full shadow-lg overflow-hidden flex flex-row">
         {chartData.map((item, index) => {
           const percentage = Math.round((item.value / total) * 100);
-          // Usamos uma largura baseada na porcentagem para criar a fatia
           return (
             <div
               key={item.name}
@@ -59,7 +62,7 @@ export default function AgendamentosChart({ data }: Props) {
         })}
       </div>
 
-      {/* LEGENDA (A única parte que importa) */}
+      {/* LEGENDA */}
       <div className="flex flex-col space-y-2 w-full max-w-xs">
         {chartData.map((item) => {
           const percentage = Math.round((item.value / total) * 100);
