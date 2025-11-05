@@ -1,8 +1,9 @@
 // components/Header.tsx
-// Removemos o 'use client' pois não há mais componentes interativos aqui
+"use client"; // Continua 'use client' por causa do CustomUserButton
 
 import { Bell, Sun } from "lucide-react";
-// Removemos a importação do UserButton
+import { OrganizationSwitcher } from "@clerk/nextjs";
+import CustomUserButton from "./CustomUserButton"; // NOVO: Importamos nosso botão customizado
 
 export default function Header() {
   return (
@@ -18,10 +19,19 @@ export default function Header() {
           <Bell className="h-6 w-6" />
         </button>
 
-        {/* Avatar Falso (Opcional, ou pode remover este div) */}
-        <div className="h-9 w-9 cursor-pointer rounded-full bg-gray-300">
-          {/* Avatar do Usuário (Placeholder) */}
-        </div>
+        {/* 1. O Seletor de Organizações (o seu 'realID') */}
+        <OrganizationSwitcher
+          afterCreateOrganizationUrl="/dashboard"
+          afterSelectOrganizationUrl="/dashboard"
+          appearance={{
+            elements: {
+              organizationSwitcherTrigger: "p-2 rounded-lg hover:bg-gray-100",
+            },
+          }}
+        />
+
+        {/* 2. O Botão de Perfil/Sair (AGORA CUSTOMIZADO) */}
+        <CustomUserButton />
       </div>
     </header>
   );

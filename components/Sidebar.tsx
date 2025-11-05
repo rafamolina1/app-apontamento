@@ -84,7 +84,6 @@ export default function Sidebar() {
       {/* Navegação Inferior (Agora apenas com "Sair") */}
       <nav className="mt-auto p-4 border-t border-gray-100">
         {/* O link "Perfil" foi removido daqui */}
-        <SignOutButton />
       </nav>
     </aside>
   );
