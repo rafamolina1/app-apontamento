@@ -1,0 +1,39 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Configura o Prisma para usar a URL do PostgreSQL
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =======================================================
+// MODELOS PARA MULTI-TENANCY E DADOS DA BARBEARIA
+// =======================================================
+
+model OrganizationSettings {
+  id                   String @id @default(cuid())
+  organizationId       String @unique // ID da Barbearia (Clerk) - ESSENCIAL!
+  
+  chatwootApiKey       String? 
+  inboxId              String? 
+  
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Agendamento {
+  id                   String @id @default(cuid())
+  organizationId       String  // <-- Chave de isolamento Multi-Tenant
+  
+  clienteNome          String
+  dataHora             DateTime
+  status               String @default("Aguardando") 
+
+  createdAt            DateTime @default(now())
+  
+  @@index([organizationId]) 
+}
