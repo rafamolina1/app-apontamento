@@ -26,13 +26,8 @@ type NavLink = {
 // Lista de links da sidebar (agora com Perfil incluído)
 const navLinks: NavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/agentes", label: "Agentes", icon: Users },
   { href: "/dashboard/whatsapp", label: "WhatsApp", icon: MessageSquare },
-  {
-    href: "/dashboard/conhecimento",
-    label: "Base de Conhecimento",
-    icon: Book,
-  },
+
   // "Perfil" foi movido para cá:
   { href: "/dashboard/perfil", label: "Perfil", icon: UserCog },
   {

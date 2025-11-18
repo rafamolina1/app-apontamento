@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.my-toast-styles .sonner-toast-close-button {
+  /* Cor e Tamanho */
+  background-color: #ef4444 !important; /* GARANTIDO: Vermelho */
+  color: white !important; /* Garante que o ícone 'X' seja branco */
+  width: 28px !important;
+  height: 28px !important;
+
+  /* Posição e Visual */
+  border-radius: 50% !important;
+  opacity: 1 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  right: 8px !important;
+  top: 8px !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.my-toast-styles .sonner-toast-close-button:hover {
+  background-color: #dc2626 !important; /* Vermelho mais escuro no hover */
+  transform: scale(1.05);
+}
+
+/* Ajusta o padding para dar espaço ao botão maior */
+.my-toast-styles {
+  padding-right: 40px !important;
+}
