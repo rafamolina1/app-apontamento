@@ -4,36 +4,24 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Configura o Prisma para usar a URL do PostgreSQL
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-// =======================================================
-// MODELOS PARA MULTI-TENANCY E DADOS DA BARBEARIA
-// =======================================================
-
+// --- ATUALIZAÇÃO DO MODELO ---
 model OrganizationSettings {
-  id                   String @id @default(cuid())
-  organizationId       String @unique // ID da Barbearia (Clerk) - ESSENCIAL!
+  id        String   @id @default(cuid())
   
-  chatwootApiKey       String? 
-  inboxId              String? 
-  
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-}
+  // Mudamos de 'organizationId' para 'clerkOrgId' para ficar claro
+  clerkOrgId String @unique 
 
-model Agendamento {
-  id                   String @id @default(cuid())
-  organizationId       String  // <-- Chave de isolamento Multi-Tenant
-  
-  clienteNome          String
-  dataHora             DateTime
-  status               String @default("Aguardando") 
+  // Novos campos para o Multi-Tenancy completo
+  chatwootAccountId   String
+  chatwootAccessToken String
+  chatwootUrl         String @default("https://chatwoot-chatwoot.nu0wew.easypanel.host")
 
-  createdAt            DateTime @default(now())
-  
-  @@index([organizationId]) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
