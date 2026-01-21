@@ -1,104 +1,85 @@
 # 🚀 Appointment App – Plataforma Multi-Tenant (Next.js)
 
-Este repositório contém o **Appointment App**, uma plataforma de **acompanhamento e gestão de interações via WhatsApp**, construída com foco em **escalabilidade, segurança e arquitetura Multi-Tenant** (múltiplos clientes, como barbearias, cada um com seus dados isolados).
-
-O projeto utiliza a arquitetura moderna do **Next.js App Router**, com **TypeScript** e uma stack robusta, eficiente e de baixo custo inicial.
+> 🇧🇷 **Português (Brasil)** | 🇺🇸 **English below**
 
 ---
 
-## 🎯 Visão Geral
+## 🇧🇷 Português (Brasil)
 
-O objetivo principal é fornecer a cada cliente (Organização) um **painel de controle isolado**, identificado por um **realID** (`organizationId`), onde ele pode:
+### 📌 Visão Geral
 
-* Monitorar métricas
-* Visualizar gráficos e estatísticas
-* Interagir com dados vindos do WhatsApp
+Este repositório contém o **Appointment App**, uma plataforma de **acompanhamento e gestão de interações via WhatsApp**, construída com foco em **escalabilidade, segurança e arquitetura Multi-Tenant** (múltiplos clientes, como barbearias, cada um com seus dados totalmente isolados).
 
-Enquanto isso, o **administrador da plataforma** gerencia integrações e configurações sensíveis (APIs) de forma centralizada.
+O projeto utiliza a arquitetura moderna do **Next.js App Router**, com **TypeScript** e uma stack robusta e eficiente.
 
 ---
 
-## 🛠️ Stack de Tecnologia
+### 🎯 Objetivo do Projeto
 
-| Componente                  | Tecnologia              | Função                                             |
-| --------------------------- | ----------------------- | -------------------------------------------------- |
-| Frontend / Framework        | Next.js 14 (App Router) | Server Components e renderização rápida            |
-| Linguagem                   | TypeScript              | Segurança de tipos                                 |
-| Estilização                 | Tailwind CSS            | UI responsiva e utilitária                         |
-| Gráficos                    | Recharts                | Gráficos de pizza e barras                         |
-| Autenticação / Multi-Tenant | Clerk                   | Login (OAuth/JWT) e gerenciamento de organizações  |
-| Banco de Dados              | Vercel Postgres         | Armazenamento por organização                      |
-| ORM                         | Prisma                  | Interface tipada com o banco                       |
-| Automação / Backend         | N8N                     | Orquestração de workflows e integrações (Chatwoot) |
-| Webhooks                    | Svix                    | Validação de segurança dos webhooks do Clerk       |
+Fornecer a cada cliente (Organização) um **painel de controle isolado**, identificado por um **realID (`organizationId`)**, permitindo:
+
+* Monitoramento de métricas
+* Visualização de gráficos e estatísticas
+* Integração e acompanhamento de dados do WhatsApp
+
+Enquanto isso, o **administrador da plataforma** gerencia integrações e chaves de API de forma centralizada e segura.
 
 ---
 
-## 🧩 Arquitetura Multi-Tenant (Fluxo do `realID`)
+### 🛠️ Stack de Tecnologia
 
-A arquitetura garante **isolamento total de dados** entre organizações.
-
-### Fluxo:
-
-1. **Criação da Organização**
-   O cliente se cadastra e cria uma organização no Clerk (ex: *Barbearia do João*).
-
-2. **Webhook do Clerk**
-   O Clerk dispara um evento `organization.created` para a API da aplicação.
-
-3. **Persistência no Banco**
-   A rota `/api/clerk-webhook` recebe o `organizationId` (realID) e cria um registro na tabela `OrganizationConfig` via Prisma.
-
-4. **Consumo no Dashboard**
-   Ao acessar `/dashboard`, o sistema:
-
-   * Obtém o `organizationId` da sessão do Clerk
-   * Busca as configurações da organização no Postgres
-   * Consulta o N8N passando o `organizationId` como filtro
-
-> 🔐 Isso garante que a **Barbearia A nunca tenha acesso aos dados da Barbearia B**.
+| Componente                  | Tecnologia              | Função                                    |
+| --------------------------- | ----------------------- | ----------------------------------------- |
+| Frontend / Framework        | Next.js 14 (App Router) | Server Components e renderização rápida   |
+| Linguagem                   | TypeScript              | Segurança de tipos                        |
+| Estilização                 | Tailwind CSS            | UI responsiva                             |
+| Gráficos                    | Recharts                | Gráficos de pizza e barras                |
+| Autenticação / Multi-Tenant | Clerk                   | OAuth/JWT e gerenciamento de organizações |
+| Banco de Dados              | Vercel Postgres         | Dados isolados por organização            |
+| ORM                         | Prisma                  | Acesso tipado ao banco                    |
+| Automação / Backend         | N8N                     | Orquestração de workflows (Chatwoot)      |
+| Webhooks                    | Svix                    | Validação de segurança dos webhooks       |
 
 ---
 
-## ⚙️ Configuração do Ambiente Local
+### 🧩 Arquitetura Multi-Tenant (Fluxo do `realID`)
 
-Para rodar o projeto localmente, é necessário configurar variáveis de ambiente e executar múltiplos serviços.
+1. O cliente cria uma **Organização** no Clerk
+2. O Clerk dispara o evento `organization.created`
+3. A rota `/api/clerk-webhook` persiste o `organizationId` no banco
+4. O Dashboard consome dados filtrados por organização via N8N
 
-### 1️⃣ Variáveis de Ambiente
+> 🔐 Garantia total de isolamento entre organizações.
 
-Crie um arquivo `.env` na raiz do projeto:
+---
+
+### ⚙️ Configuração do Ambiente Local
+
+#### Variáveis de Ambiente
 
 ```env
-# --- CLERK ---
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-CLERK_WEBHOOK_SECRET=whsec_...
+# CLERK
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+CLERK_WEBHOOK_SECRET=
 
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=
 
-# --- DATABASE (PRISMA / POSTGRES) ---
-DATABASE_URL="postgres://USUARIO:SENHA@HOST:5432/postgres?sslmode=require"
+# DATABASE
+DATABASE_URL=""
 ```
 
----
+#### Serviços Necessários
 
-### 2️⃣ Serviços Necessários
+| Terminal     | Comando                         |
+| ------------ | ------------------------------- |
+| 1            | npx next dev                    |
+| 2            | n8n                             |
+| 3            | npx localtunnel --port 3000     |
+| 4 (Opcional) | npx dotenv -- npx prisma studio |
 
-Você precisará de **3 processos ativos** (4 opcional):
-
-| Terminal     | Comando                           | Descrição                               |
-| ------------ | --------------------------------- | --------------------------------------- |
-| 1            | `npx next dev`                    | Inicia o servidor Next.js               |
-| 2            | `n8n`                             | Inicia o servidor de automação          |
-| 3            | `npx localtunnel --port 3000`     | Cria URL pública para webhooks do Clerk |
-| 4 (Opcional) | `npx dotenv -- npx prisma studio` | Interface visual do banco               |
-
----
-
-### 3️⃣ Sincronização do Banco
-
-Sempre que o arquivo `prisma/schema.prisma` for alterado:
+#### Sincronização do Banco
 
 ```bash
 npx prisma db push
@@ -106,35 +87,103 @@ npx prisma db push
 
 ---
 
-## ✨ Funcionalidades Implementadas
+### ✨ Funcionalidades
 
-* 🔐 Autenticação JWT / OAuth com Clerk
-* 🏢 Multi-Tenancy baseado em `organizationId`
-* 🛡️ Proteção de rotas com `middleware.ts`
-* 📊 Dashboard com métricas e gráficos
-* 🔄 Integração com N8N para dados externos
-* 🗄️ Prisma + Postgres configurados
-* 🧑‍💼 Fluxo inicial de Admin (`/dashboard/admin`) para configuração de APIs
+* Autenticação OAuth/JWT
+* Multi-Tenancy por organização
+* Dashboard com métricas e gráficos
+* Integração com N8N
+* Prisma + Postgres configurados
 
 ---
 
-## 🚧 Próximos Passos
+## 🇺🇸 English
 
-* Finalizar a tela `/dashboard/whatsapp` com dados reais
-* Implementar **convite de agentes / funcionários** da organização
-* Ajustar workflows do N8N para filtrar dados por `organizationId`
+### 📌 Overview
 
----
+This repository contains **Appointment App**, a **WhatsApp interaction monitoring and management platform**, built with a strong focus on **scalability, security, and Multi-Tenant architecture**.
 
-## 📌 Observações
-
-Este projeto foi estruturado para **crescer de forma organizada**, permitindo novos clientes, novas integrações e novos módulos sem comprometer segurança ou performance.
+The application is built on the modern **Next.js App Router** architecture, using **TypeScript** and a robust technology stack.
 
 ---
 
-Se quiser, posso:
+### 🎯 Project Goal
 
-* Ajustar o README para **open source**
-* Criar um **README em inglês**
-* Escrever um **CONTRIBUTING.md**
-* Padronizar badges, scripts e estrutura do repositório
+Provide each client (Organization) with an **isolated dashboard**, identified by a **realID (`organizationId`)**, enabling:
+
+* Metrics monitoring
+* Charts and analytics
+* WhatsApp data integration
+
+Meanwhile, the **platform administrator** centrally manages sensitive API configurations.
+
+---
+
+### 🛠️ Technology Stack
+
+| Component                      | Technology              | Purpose                            |
+| ------------------------------ | ----------------------- | ---------------------------------- |
+| Frontend / Framework           | Next.js 14 (App Router) | Server Components & fast rendering |
+| Language                       | TypeScript              | Type safety                        |
+| Styling                        | Tailwind CSS            | Responsive UI                      |
+| Charts                         | Recharts                | Pie & bar charts                   |
+| Authentication / Multi-Tenancy | Clerk                   | OAuth/JWT & organizations          |
+| Database                       | Vercel Postgres         | Tenant-isolated storage            |
+| ORM                            | Prisma                  | Type-safe DB access                |
+| Automation / Backend           | N8N                     | Workflow orchestration             |
+| Webhooks                       | Svix                    | Secure webhook validation          |
+
+---
+
+### 🧩 Multi-Tenant Architecture (`realID` Flow)
+
+1. Client creates an **Organization** in Clerk
+2. Clerk triggers `organization.created` webhook
+3. `/api/clerk-webhook` stores the `organizationId`
+4. Dashboard fetches organization-filtered data via N8N
+
+> 🔐 Guarantees strict data isolation between tenants.
+
+---
+
+### ⚙️ Local Development Setup
+
+#### Environment Variables
+
+```env
+# CLERK AUTH
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+CLERK_WEBHOOK_SECRET=
+
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=
+
+# DATABASE
+DATABASE_URL=""
+```
+
+#### Required Services
+
+| Terminal     | Command                         |
+| ------------ | ------------------------------- |
+| 1            | npx next dev                    |
+| 2            | n8n                             |
+| 3            | npx localtunnel --port 3000     |
+| 4 (Optional) | npx dotenv -- npx prisma studio |
+
+#### Database Sync
+
+```bash
+npx prisma db push
+```
+
+---
+
+### ✨ Features
+
+* OAuth/JWT Authentication
+* Organization-based Multi-Tenancy
+* Dashboard with charts and metrics
+* N8N integrations
+* Prisma + Postgres setup
